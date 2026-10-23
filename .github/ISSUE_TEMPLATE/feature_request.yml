@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an improvement or a new file format
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Simple 3D Viewer aims to stay small and simple. Ideas that fit that goal are the easiest to accept.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: Describe the situation or problem first, not the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to see?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered

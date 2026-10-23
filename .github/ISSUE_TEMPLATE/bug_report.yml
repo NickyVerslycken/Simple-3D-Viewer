@@ -1,0 +1,49 @@
+name: Bug report
+description: Something does not work, looks wrong, or a file will not open
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please check the [existing issues](https://github.com/NickyVerslycken/Simple-3D-Viewer/issues) first.
+        **Security problems:** do not report them here, see the [security policy](https://github.com/NickyVerslycken/Simple-3D-Viewer/security/policy).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? Screenshots are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Click ...
+        3. See ...
+  - type: input
+    id: format
+    attributes:
+      label: File type
+      description: Which format is the model (STL, OBJ, 3MF, ...) and which program created it? Attach the file if you can (zip it) and if you are allowed to share it.
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Help → About Simple 3D Viewer (Windows/Linux) or the app menu → About (macOS)
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [Windows 11, Windows 10, macOS (Apple silicon), macOS (Intel), Linux, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Graphics card / driver, an error message, whether it happens with every file.
