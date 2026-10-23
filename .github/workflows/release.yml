@@ -1,7 +1,7 @@
 name: Release
 
 # Builds the installers for all platforms and attaches them (with SHA-256 checksum files) to a release.
-# Run it from the Actions tab: "Release" -> "Run workflow" and enter the tag, e.g. v1.0.1.
+# Run it from the Actions tab: "Release" -> "Run workflow", enter the tag (e.g. v1.0.1) and pick the platform.
 on:
   workflow_dispatch:
     inputs:
@@ -9,23 +9,35 @@ on:
         description: Release tag to attach the installers to (created if it does not exist)
         required: true
         default: v1.0.0
+      platform:
+        description: Which installers to build. Files of the same name on the release are replaced, so pick one platform to leave the others untouched.
+        type: choice
+        options: [all, windows, macos, linux]
+        default: all
 
 permissions:
   contents: write
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+    steps:
+      - id: pick
+        env:
+          PLATFORM: ${{ inputs.platform }}
+        run: |
+          all='[{"platform":"windows","os":"windows-latest","script":"dist:win"},{"platform":"macos","os":"macos-latest","script":"dist:mac"},{"platform":"linux","os":"ubuntu-latest","script":"dist:linux"}]'
+          echo "matrix=$(echo "$all" | jq -c --arg p "$PLATFORM" 'map(select($p == "all" or .platform == $p))')" >> "$GITHUB_OUTPUT"
+
   build:
-    name: Build (${{ matrix.os }})
+    name: Build (${{ matrix.platform }})
+    needs: plan
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: windows-latest
-            script: dist:win
-          - os: macos-latest
-            script: dist:mac
-          - os: ubuntu-latest
-            script: dist:linux
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
@@ -40,9 +52,13 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false' # unsigned builds; add signing secrets to sign / notarize
       - uses: actions/upload-artifact@v7
         with:
-          name: installers-${{ matrix.os }}
+          name: installers-${{ matrix.platform }}
           path: |
-            release/Simple-3D-Viewer-*
+            release/Simple-3D-Viewer-*.exe
+            release/Simple-3D-Viewer-*.msi
+            release/Simple-3D-Viewer-*.dmg
+            release/Simple-3D-Viewer-*.AppImage
+            release/Simple-3D-Viewer-*.deb
             release/SHA256SUMS-*.txt
           if-no-files-found: error
 

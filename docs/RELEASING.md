@@ -70,8 +70,9 @@ npm run dist:linux        # AppImage + .deb + release/SHA256SUMS-linux.txt
 
 ## Automated builds
 
-The **Release** workflow (*Actions → Release → Run workflow*) builds the Windows, macOS and Linux installers on GitHub's servers and attaches
-them, with checksum files, to the release you name. Use it instead of the manual steps if you prefer. Files with the same name are replaced,
+The **Release** workflow (*Actions → Release → Run workflow*) builds the installers on GitHub's servers and attaches
+them, with checksum files, to the release you name. Choose a single platform (for example `macos`) to build only that one, or `all`.
+Use it instead of the manual steps if you prefer. Files with the same name are replaced,
 so do not mix manually built and automatically built files of the same platform: the checksum file has to match the installer next to it.
 
 ## Checking a build
