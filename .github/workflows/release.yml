@@ -47,9 +47,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node node_modules/electron/install.js
+      # Builds are not code-signed (macOS is ad-hoc signed, see "identity" in package.json); add signing secrets to sign / notarize.
       - run: npm run ${{ matrix.script }}
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false' # unsigned builds; add signing secrets to sign / notarize
       - uses: actions/upload-artifact@v7
         with:
           name: installers-${{ matrix.platform }}

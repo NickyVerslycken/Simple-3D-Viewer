@@ -28,9 +28,9 @@
     "media": "npm run samples && npm run build:renderer && electron scripts/docs-media.cjs && node scripts/compose-media.mjs",
     "checksums": "node scripts/checksums.mjs",
     "dist": "npm run build:renderer && electron-builder",
-    "dist:win": "npm run build:renderer && electron-builder --win nsis msi && node scripts/checksums.mjs windows",
-    "dist:mac": "npm run build:renderer && electron-builder --mac dmg --universal && node scripts/checksums.mjs macos",
-    "dist:linux": "npm run build:renderer && electron-builder --linux AppImage deb && node scripts/checksums.mjs linux"
+    "dist:win": "npm run build:renderer && electron-builder --win nsis msi --publish never && node scripts/checksums.mjs windows",
+    "dist:mac": "npm run build:renderer && electron-builder --mac dmg --universal --publish never && node scripts/checksums.mjs macos",
+    "dist:linux": "npm run build:renderer && electron-builder --linux AppImage deb --publish never && node scripts/checksums.mjs linux"
   },
   "build": {
     "appId": "io.github.nickyverslycken.simple3dviewer",
@@ -80,6 +80,8 @@
     "mac": {
       "icon": "build/icon.png",
       "category": "public.app-category.graphics-design",
+      "identity": "-",
+      "hardenedRuntime": false,
       "target": ["dmg"]
     },
     "dmg": {
