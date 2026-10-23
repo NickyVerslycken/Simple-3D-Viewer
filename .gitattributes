@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.gif binary
+*.ico binary
+*.icns binary
+*.stl binary
+*.3mf binary
+*.glb binary
+*.ply binary

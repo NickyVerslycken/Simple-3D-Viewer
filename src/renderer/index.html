@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src blob:">
+  <title>Simple 3D Viewer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <button id="btnOpen" class="btn primary" title="Open file (Ctrl+O)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Open
+      </button>
+      <div class="navgroup">
+        <button id="btnPrev" class="btn icon" title="Previous file in folder (←)" disabled>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button id="btnNext" class="btn icon" title="Next file in folder (→)" disabled>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div id="fileInfo">
+        <span id="fileName"></span>
+        <span id="fileCounter"></span>
+      </div>
+      <div class="spacer"></div>
+      <button id="btnShot" class="btn icon" title="Save screenshot (P)" disabled>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
+      <button id="btnPanel" class="btn icon" title="Show/hide settings (Tab)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+      </button>
+    </header>
+
+    <main id="stage">
+      <div id="empty">
+        <svg viewBox="0 0 64 64" width="84" height="84"><g stroke="#cfe6ff" stroke-width="1.2" stroke-linejoin="round"><polygon points="32,10 52,21.5 32,33 12,21.5" fill="#8cc4ff"/><polygon points="12,21.5 32,33 32,56 12,44.5" fill="#3f86d6"/><polygon points="52,21.5 52,44.5 32,56 32,33" fill="#2a5fa3"/></g></svg>
+        <h1>Drop a 3D file here</h1>
+        <p>or press <kbd>Ctrl</kbd> + <kbd>O</kbd> to open one</p>
+        <p class="formats">STL · OBJ · 3MF · PLY · AMF · GLB/GLTF · FBX · DAE</p>
+      </div>
+      <div id="busy" hidden><div class="spinner"></div><span>Loading…</span></div>
+      <div id="dropOverlay" hidden>Drop to open</div>
+      <div id="toast" hidden></div>
+    </main>
+
+    <aside id="panel">
+      <section>
+        <h2>Color</h2>
+        <div class="seg" data-key="colorMode">
+          <button data-v="single">Single</button>
+          <button data-v="parts">By part</button>
+          <button data-v="original">File</button>
+        </div>
+        <div class="swatches" id="colorSwatches"></div>
+        <label class="custom">Custom <input type="color" id="colorCustom"></label>
+      </section>
+
+      <section>
+        <h2>Display</h2>
+        <div class="seg wrap" data-key="display">
+          <button data-v="solid">Solid</button>
+          <button data-v="edges">Edges</button>
+          <button data-v="wire">Wire</button>
+          <button data-v="xray">X-ray</button>
+          <button data-v="normals">Normals</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Shading</h2>
+        <div class="seg" data-key="shading">
+          <button data-v="smooth">Smooth</button>
+          <button data-v="flat">Flat</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Background</h2>
+        <div class="swatches" id="bgSwatches"></div>
+        <label class="custom">Custom <input type="color" id="bgCustom"></label>
+      </section>
+
+      <section>
+        <h2>Scene</h2>
+        <label class="check"><input type="checkbox" data-key="shadows"> Shadows</label>
+        <label class="check"><input type="checkbox" data-key="grid"> Grid</label>
+        <label class="check"><input type="checkbox" data-key="axes"> Axes indicator</label>
+        <label class="check"><input type="checkbox" id="zUp"> Z axis is up</label>
+      </section>
+
+      <section>
+        <h2>View</h2>
+        <div class="views">
+          <button class="btn" data-view="iso">Iso <small>0</small></button>
+          <button class="btn" data-view="front">Front <small>1</small></button>
+          <button class="btn" data-view="back">Back <small>2</small></button>
+          <button class="btn" data-view="left">Left <small>3</small></button>
+          <button class="btn" data-view="right">Right <small>4</small></button>
+          <button class="btn" data-view="top">Top <small>5</small></button>
+          <button class="btn" data-view="bottom">Bottom <small>6</small></button>
+          <button class="btn" id="btnFit">Fit <small>F</small></button>
+        </div>
+      </section>
+
+      <section class="help">
+        <p><b>Rotate</b> left-drag · <b>Pan</b> right-drag · <b>Zoom</b> wheel or middle-drag</p>
+      </section>
+    </aside>
+
+    <footer id="status">
+      <span id="stSize"></span>
+      <span id="stTris"></span>
+      <span id="stParts"></span>
+      <span id="stGrid"></span>
+      <span id="stFile"></span>
+      <span class="spacer"></span>
+      <div id="zoomBar" hidden>
+        <button id="zoomOut" title="Zoom out (−)" aria-label="Zoom out">−</button>
+        <button id="zoomLevel" title="Reset to 100% (Ctrl+0)">100%</button>
+        <button id="zoomIn" title="Zoom in (+)" aria-label="Zoom in">+</button>
+      </div>
+    </footer>
+  </div>
+  <input type="file" id="fileInput" hidden>
+  <script src="app.js"></script>
+</body>
+</html>

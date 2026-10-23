@@ -1,0 +1,108 @@
+{
+  "name": "simple-3d-viewer",
+  "productName": "Simple 3D Viewer",
+  "version": "1.0.0",
+  "description": "A small, fast, offline viewer for STL, OBJ, 3MF and other 3D-print file formats.",
+  "author": "Nicky Verslycken (https://github.com/NickyVerslycken)",
+  "license": "PolyForm-Shield-1.0.0",
+  "homepage": "https://github.com/NickyVerslycken/Simple-3D-Viewer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NickyVerslycken/Simple-3D-Viewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NickyVerslycken/Simple-3D-Viewer/issues"
+  },
+  "keywords": ["3d", "viewer", "stl", "obj", "3mf", "ply", "gltf", "3d-printing", "slicer", "electron", "threejs"],
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "build:renderer": "node scripts/build.mjs",
+    "icon": "node scripts/make-icon.mjs",
+    "start": "npm run build:renderer && electron .",
+    "samples": "node test/make-samples.mjs",
+    "smoke": "npm run samples && npm run build:renderer && electron test/smoke.cjs",
+    "media": "npm run samples && npm run build:renderer && electron scripts/docs-media.cjs && node scripts/compose-media.mjs",
+    "checksums": "node scripts/checksums.mjs",
+    "dist": "npm run build:renderer && electron-builder",
+    "dist:win": "npm run build:renderer && electron-builder --win nsis msi && node scripts/checksums.mjs windows",
+    "dist:mac": "npm run build:renderer && electron-builder --mac dmg --universal && node scripts/checksums.mjs macos",
+    "dist:linux": "npm run build:renderer && electron-builder --linux AppImage deb && node scripts/checksums.mjs linux"
+  },
+  "build": {
+    "appId": "io.github.nickyverslycken.simple3dviewer",
+    "productName": "Simple 3D Viewer",
+    "copyright": "Copyright © 2026 Nicky Verslycken",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/main/**/*",
+      "dist/renderer/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "LICENSE", "to": "LICENSE.txt" },
+      { "from": "THIRD-PARTY-NOTICES.md", "to": "THIRD-PARTY-NOTICES.txt" }
+    ],
+    "fileAssociations": [
+      { "ext": "stl", "name": "STL 3D model", "description": "STL 3D model", "mimeType": "model/stl", "role": "Viewer" },
+      { "ext": "obj", "name": "OBJ 3D model", "description": "Wavefront OBJ 3D model", "mimeType": "model/obj", "role": "Viewer" },
+      { "ext": "3mf", "name": "3MF 3D model", "description": "3D Manufacturing Format model", "mimeType": "model/3mf", "role": "Viewer" },
+      { "ext": "ply", "name": "PLY 3D model", "description": "Polygon File Format model", "role": "Viewer" },
+      { "ext": "amf", "name": "AMF 3D model", "description": "Additive Manufacturing File", "role": "Viewer" },
+      { "ext": "glb", "name": "GLB 3D model", "description": "glTF binary 3D model", "mimeType": "model/gltf-binary", "role": "Viewer" },
+      { "ext": "gltf", "name": "glTF 3D model", "description": "glTF 3D model", "mimeType": "model/gltf+json", "role": "Viewer" },
+      { "ext": "fbx", "name": "FBX 3D model", "description": "Autodesk FBX 3D model", "role": "Viewer" },
+      { "ext": "dae", "name": "Collada 3D model", "description": "Collada 3D model", "mimeType": "model/vnd.collada+xml", "role": "Viewer" }
+    ],
+    "win": {
+      "icon": "build/icon.png",
+      "target": ["nsis", "msi"]
+    },
+    "nsis": {
+      "artifactName": "Simple-3D-Viewer-Windows-Setup.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "msi": {
+      "artifactName": "Simple-3D-Viewer-Windows.${ext}",
+      "oneClick": false,
+      "perMachine": true
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.graphics-design",
+      "target": ["dmg"]
+    },
+    "dmg": {
+      "artifactName": "Simple-3D-Viewer-macOS.${ext}"
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "category": "Graphics",
+      "target": ["AppImage", "deb"],
+      "maintainer": "Nicky Verslycken <NickyVerslycken@users.noreply.github.com>"
+    },
+    "appImage": {
+      "artifactName": "Simple-3D-Viewer-Linux.${ext}"
+    },
+    "deb": {
+      "artifactName": "Simple-3D-Viewer-Linux.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2",
+    "sharp": "^0.35.5",
+    "three": "^0.186.1"
+  }
+}
