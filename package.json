@@ -13,7 +13,19 @@
   "bugs": {
     "url": "https://github.com/NickyVerslycken/Simple-3D-Viewer/issues"
   },
-  "keywords": ["3d", "viewer", "stl", "obj", "3mf", "ply", "gltf", "3d-printing", "slicer", "electron", "threejs"],
+  "keywords": [
+    "3d",
+    "viewer",
+    "stl",
+    "obj",
+    "3mf",
+    "ply",
+    "gltf",
+    "3d-printing",
+    "slicer",
+    "electron",
+    "threejs"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -30,7 +42,10 @@
     "dist": "npm run build:renderer && electron-builder",
     "dist:win": "npm run build:renderer && electron-builder --win nsis msi --publish never && node scripts/checksums.mjs windows",
     "dist:mac": "npm run build:renderer && electron-builder --mac dmg --universal --publish never && node scripts/checksums.mjs macos",
-    "dist:linux": "npm run build:renderer && electron-builder --linux AppImage deb --publish never && node scripts/checksums.mjs linux"
+    "dist:linux": "npm run build:renderer && electron-builder --linux AppImage deb --publish never && node scripts/checksums.mjs linux",
+    "dist:store": "node scripts/build-store.mjs",
+    "store:assets": "node scripts/make-store-assets.mjs",
+    "store:screenshots": "npm run samples && npm run build:renderer && electron scripts/store-screenshots.cjs"
   },
   "build": {
     "appId": "io.github.nickyverslycken.simple3dviewer",
@@ -46,23 +61,83 @@
       "package.json"
     ],
     "extraResources": [
-      { "from": "LICENSE", "to": "LICENSE.txt" },
-      { "from": "THIRD-PARTY-NOTICES.md", "to": "THIRD-PARTY-NOTICES.txt" }
+      {
+        "from": "LICENSE",
+        "to": "LICENSE.txt"
+      },
+      {
+        "from": "THIRD-PARTY-NOTICES.md",
+        "to": "THIRD-PARTY-NOTICES.txt"
+      }
     ],
     "fileAssociations": [
-      { "ext": "stl", "name": "STL 3D model", "description": "STL 3D model", "mimeType": "model/stl", "role": "Viewer" },
-      { "ext": "obj", "name": "OBJ 3D model", "description": "Wavefront OBJ 3D model", "mimeType": "model/obj", "role": "Viewer" },
-      { "ext": "3mf", "name": "3MF 3D model", "description": "3D Manufacturing Format model", "mimeType": "model/3mf", "role": "Viewer" },
-      { "ext": "ply", "name": "PLY 3D model", "description": "Polygon File Format model", "role": "Viewer" },
-      { "ext": "amf", "name": "AMF 3D model", "description": "Additive Manufacturing File", "role": "Viewer" },
-      { "ext": "glb", "name": "GLB 3D model", "description": "glTF binary 3D model", "mimeType": "model/gltf-binary", "role": "Viewer" },
-      { "ext": "gltf", "name": "glTF 3D model", "description": "glTF 3D model", "mimeType": "model/gltf+json", "role": "Viewer" },
-      { "ext": "fbx", "name": "FBX 3D model", "description": "Autodesk FBX 3D model", "role": "Viewer" },
-      { "ext": "dae", "name": "Collada 3D model", "description": "Collada 3D model", "mimeType": "model/vnd.collada+xml", "role": "Viewer" }
+      {
+        "ext": "stl",
+        "name": "STL 3D model",
+        "description": "STL 3D model",
+        "mimeType": "model/stl",
+        "role": "Viewer"
+      },
+      {
+        "ext": "obj",
+        "name": "OBJ 3D model",
+        "description": "Wavefront OBJ 3D model",
+        "mimeType": "model/obj",
+        "role": "Viewer"
+      },
+      {
+        "ext": "3mf",
+        "name": "3MF 3D model",
+        "description": "3D Manufacturing Format model",
+        "mimeType": "model/3mf",
+        "role": "Viewer"
+      },
+      {
+        "ext": "ply",
+        "name": "PLY 3D model",
+        "description": "Polygon File Format model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "amf",
+        "name": "AMF 3D model",
+        "description": "Additive Manufacturing File",
+        "role": "Viewer"
+      },
+      {
+        "ext": "glb",
+        "name": "GLB 3D model",
+        "description": "glTF binary 3D model",
+        "mimeType": "model/gltf-binary",
+        "role": "Viewer"
+      },
+      {
+        "ext": "gltf",
+        "name": "glTF 3D model",
+        "description": "glTF 3D model",
+        "mimeType": "model/gltf+json",
+        "role": "Viewer"
+      },
+      {
+        "ext": "fbx",
+        "name": "FBX 3D model",
+        "description": "Autodesk FBX 3D model",
+        "role": "Viewer"
+      },
+      {
+        "ext": "dae",
+        "name": "Collada 3D model",
+        "description": "Collada 3D model",
+        "mimeType": "model/vnd.collada+xml",
+        "role": "Viewer"
+      }
     ],
     "win": {
       "icon": "build/icon.png",
-      "target": ["nsis", "msi"]
+      "target": [
+        "nsis",
+        "msi"
+      ]
     },
     "nsis": {
       "artifactName": "Simple-3D-Viewer-Windows-Setup.${ext}",
@@ -82,7 +157,9 @@
       "category": "public.app-category.graphics-design",
       "identity": "-",
       "hardenedRuntime": false,
-      "target": ["dmg"]
+      "target": [
+        "dmg"
+      ]
     },
     "dmg": {
       "artifactName": "Simple-3D-Viewer-macOS.${ext}"
@@ -90,7 +167,10 @@
     "linux": {
       "icon": "build/icon.png",
       "category": "Graphics",
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "maintainer": "Nicky Verslycken <NickyVerslycken@users.noreply.github.com>"
     },
     "appImage": {
@@ -98,6 +178,18 @@
     },
     "deb": {
       "artifactName": "Simple-3D-Viewer-Linux.${ext}"
+    },
+    "appx": {
+      "artifactName": "Simple-3D-Viewer-Store.${ext}",
+      "applicationId": "Simple3DViewer",
+      "displayName": "Simple 3D Viewer",
+      "identityName": "REPLACE-ME.Simple3DViewer",
+      "publisher": "CN=REPLACE-ME",
+      "publisherDisplayName": "REPLACE ME",
+      "backgroundColor": "#14161a",
+      "languages": [
+        "en-US"
+      ]
     }
   },
   "devDependencies": {

@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Microsoft Store packaging (`npm run dist:store`), Store listing text, screenshots and logos, a privacy policy and a publishing guide (`docs/MICROSOFT-STORE.md`).
+- `examples/` folder with small sample models.
+
 ## [1.0.0] - 2026-10-23
 
 First public release.
