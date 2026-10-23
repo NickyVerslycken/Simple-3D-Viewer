@@ -50,9 +50,10 @@ no internet connection, no slicer needed.
 | **Windows** 10 / 11 (64-bit) | [**Simple-3D-Viewer-Windows-Setup.exe**](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/Simple-3D-Viewer-Windows-Setup.exe) | Installer for the current user. No admin rights needed. **Recommended.** |
 | | [Simple-3D-Viewer-Windows.msi](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/Simple-3D-Viewer-Windows.msi) | Per-machine installer, for managed or company PCs. |
 | **macOS** (Apple silicon and Intel) | [**Simple-3D-Viewer-macOS.dmg**](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/Simple-3D-Viewer-macOS.dmg) | One universal disk image for both processor types. |
-| **Linux** (x64) | Build from source (below) | A prebuilt AppImage and `.deb` can be produced with `npm run dist:linux`. |
+| **Linux** (x64) | [**Simple-3D-Viewer-Linux.AppImage**](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/Simple-3D-Viewer-Linux.AppImage) | Runs on most distributions, nothing to install. |
+| | [Simple-3D-Viewer-Linux.deb](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/Simple-3D-Viewer-Linux.deb) | For Debian, Ubuntu and derivatives. Registers the file types. |
 
-Checksums: [SHA256SUMS-windows.txt](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/SHA256SUMS-windows.txt) · [SHA256SUMS-macos.txt](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/SHA256SUMS-macos.txt)
+Checksums: [SHA256SUMS-windows.txt](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/SHA256SUMS-windows.txt) · [SHA256SUMS-macos.txt](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/SHA256SUMS-macos.txt) · [SHA256SUMS-linux.txt](https://github.com/NickyVerslycken/Simple-3D-Viewer/releases/latest/download/SHA256SUMS-linux.txt)
 
 ### Install
 
@@ -80,13 +81,14 @@ Checksums: [SHA256SUMS-windows.txt](https://github.com/NickyVerslycken/Simple-3D
 <details>
 <summary><b>Linux</b></summary>
 
-Build the AppImage or `.deb` yourself (see [Build from source](#build-from-source)), then:
-
 ```bash
 chmod +x Simple-3D-Viewer-Linux.AppImage && ./Simple-3D-Viewer-Linux.AppImage
 # or
 sudo apt install ./Simple-3D-Viewer-Linux.deb
 ```
+
+If the AppImage does not start on a recent distribution that restricts unprivileged user namespaces (for example Ubuntu 24.04),
+start it with `./Simple-3D-Viewer-Linux.AppImage --no-sandbox`, or use the `.deb`.
 
 </details>
 
@@ -202,7 +204,7 @@ npm run dist:linux    # Linux:   AppImage + .deb (run on Linux or WSL)
 npm run smoke         # render every sample format → test/out/*.png
 ```
 
-Installers can only be built on their own operating system. The [Release workflow](.github/workflows/release.yml) builds all three on GitHub.
+Installers can only be built on their own operating system. The [Release workflow](.github/workflows/release.yml) builds them on GitHub for you.
 Details are in [docs/RELEASING.md](docs/RELEASING.md).
 
 **How it works:** a small [Electron](https://www.electronjs.org) shell (`src/main`) and a [three.js](https://threejs.org) viewer (`src/renderer`).
